@@ -31,6 +31,10 @@ public class BinarySearchTree <E extends Comparable<? super E>>{
         this.traversalType = traversalType;
     }
     //--------------------------------------------------------------------------
+    public Node<E> getRoot(){
+        return root;
+    }
+    //--------------------------------------------------------------------------
     public Node<E> insert(E value) {
         Node<E> node = new Node(value);
         if (root == null) {
