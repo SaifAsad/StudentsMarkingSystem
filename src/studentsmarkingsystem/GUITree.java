@@ -19,17 +19,17 @@ public class GUITree extends JPanel {
         super(new BorderLayout());
         setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
         
-        BinarySearchTree<String> binarySearchTree = new BinarySearchTree<>();
-        binarySearchTree.insert("N");
-        binarySearchTree.insert("Z");
-        binarySearchTree.insert("L");
-        binarySearchTree.insert("A");
-        binarySearchTree.insert("D");
-        binarySearchTree.insert("R");
-        binarySearchTree.insert("U");
-        binarySearchTree.insert("G");
-        binarySearchTree.insert("B");
-        binarySearchTree.insert("Y");
+        BinarySearchTree binarySearchTree = new BinarySearchTree();
+        binarySearchTree.insert("N", 1);
+        binarySearchTree.insert("Z", 2);
+        binarySearchTree.insert("L", 3);
+        binarySearchTree.insert("A", 4);
+        binarySearchTree.insert("D", 5);
+        binarySearchTree.insert("R", 6);
+        binarySearchTree.insert("U", 7);
+        binarySearchTree.insert("G", 8);
+        binarySearchTree.insert("B", 9);
+        binarySearchTree.insert("Y", 10);
         
         TreePanel treePanel = new TreePanel(binarySearchTree);
         add(treePanel, BorderLayout.CENTER);

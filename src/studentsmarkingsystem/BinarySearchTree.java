@@ -7,16 +7,15 @@ import java.util.Queue;
 /**
  *
  * @author Saif Asad
- * @param <E>
  */
-public class BinarySearchTree <E extends Comparable<? super E>>{
+public class BinarySearchTree {
 
     public enum TraversalType {
 
         PREORDER, INORDER, POSTORDER, LEVELORDER
     }
 
-    protected Node<E> root;
+    protected Node root;
     protected int size;
     private TraversalType traversalType;
 
@@ -31,12 +30,12 @@ public class BinarySearchTree <E extends Comparable<? super E>>{
         this.traversalType = traversalType;
     }
     //--------------------------------------------------------------------------
-    public Node<E> getRoot(){
+    public Node getRoot(){
         return root;
     }
     //--------------------------------------------------------------------------
-    public Node<E> insert(E value) {
-        Node<E> node = new Node(value);
+    public Node insert(String name, int mark) {
+        Node node = new Node(name, mark);
         if (root == null) {
             root = node;
         } else {
@@ -47,9 +46,9 @@ public class BinarySearchTree <E extends Comparable<? super E>>{
     }
     //--------------------------------------------------------------------------
     //the node will be inserted as a leaf somewhere
-    private void insert(Node<E> node, Node<E> parent) {
+    private void insert(Node node, Node parent) {
         //compare to determine to which side we add the node
-        if (node.getValue().compareTo(parent.getValue()) <= 0) {
+        if (node.getName().compareTo(parent.getName()) <= 0) {
             //what if the parent has a left child
             if (parent.getLeftChild() == null) {
                 parent.setLeftChild(node);
@@ -72,11 +71,11 @@ public class BinarySearchTree <E extends Comparable<? super E>>{
         }
     }
     //--------------------------------------------------------------------------
-    private Node<E> getSuccessor(Node<E> node) {
+    private Node getSuccessor(Node node) {
         //left most child of the right child or the right most child of the left child
-        Node<E> successorParent = node;
-        Node<E> successor = node;
-        Node<E> current = node.getRightChild();
+        Node successorParent = node;
+        Node successor = node;
+        Node current = node.getRightChild();
         //will loop untill current is null, the successor is found
         while (current != null) {
             successorParent = successor;
@@ -90,7 +89,7 @@ public class BinarySearchTree <E extends Comparable<? super E>>{
         return successor;
     }
     //--------------------------------------------------------------------------
-    public Node<E> delete(Node<E> node) {
+    public Node delete(Node node) {
         //there are 4 cases in delete
         if (node.getLeftChild() == null && node.getRightChild() == null) {
             //if the node is a leaf
@@ -121,7 +120,7 @@ public class BinarySearchTree <E extends Comparable<? super E>>{
             }
             //delete a node that has 2 children
         } else {
-            Node<E> successor = getSuccessor(node);
+            Node successor = getSuccessor(node);
             if (node == root) {
                 root = successor;
             } else if (node.isLeftChild()) {
@@ -148,7 +147,7 @@ public class BinarySearchTree <E extends Comparable<? super E>>{
         return heightOfBinaryTree(root);
     }
     //--------------------------------------------------------------------------
-    private int heightOfBinaryTree(Node<E> node) {
+    private int heightOfBinaryTree(Node node) {
         if (node == null) {
             return 0;
         } else {
@@ -179,17 +178,19 @@ public class BinarySearchTree <E extends Comparable<? super E>>{
     }
 
     //--------------------------------------------------------------------------
-    public static class Node<E extends Comparable<? super E>> {
+    public static class Node {
 
-        private E value;
-        private Node<E> rightChild;
-        private Node<E> leftChild;
-        private Node<E> parent;
+        private String name;
+        private int mark;
+        private Node rightChild;
+        private Node leftChild;
+        private Node parent;
         private boolean isLeftChild;
         private boolean isRightChild;
         
-        public Node(E value) {
-            this.value = value;
+        public Node(String value, int mark) {
+            this.name = value;
+            this.mark = mark;
             leftChild = null;
             rightChild = null;
             this.parent = null;
@@ -213,27 +214,34 @@ public class BinarySearchTree <E extends Comparable<? super E>>{
             this.isLeftChild = !isRightChild;
         }
         //----------------------------------------------------------------------
-        public Node<E> getParent() {
+        public Node getParent() {
             return this.parent;
         }
         //----------------------------------------------------------------------
-        public void setParent(Node<E> parent) {
+        public void setParent(Node parent) {
             this.parent = parent;
         }
         //----------------------------------------------------------------------
-        public E getValue() {
-            return value;
+        public String getName() {
+            return name;
+        }
+        public int getMark(){
+            return mark;
         }
         //----------------------------------------------------------------------
-        public void setValue(E value) {
-            this.value = value;
+        public void setName(String name) {
+            this.name = name;
+        }
+        
+        public void setMark(int mark){
+            this.mark = mark;
         }
         //----------------------------------------------------------------------
-        public Node<E> getRightChild() {
+        public Node getRightChild() {
             return rightChild;
         }
         //----------------------------------------------------------------------
-        public void setRightChild(Node<E> rightChild) {
+        public void setRightChild(Node rightChild) {
             this.rightChild = rightChild;
             if (rightChild != null) {
                 rightChild.setIsRightChild(true);
@@ -242,11 +250,11 @@ public class BinarySearchTree <E extends Comparable<? super E>>{
             }
         }
         //----------------------------------------------------------------------
-        public Node<E> getLeftChild() {
+        public Node getLeftChild() {
             return leftChild;
         }
         //----------------------------------------------------------------------
-        public void setLeftChild(Node<E> leftChild) {
+        public void setLeftChild(Node leftChild) {
             this.leftChild = leftChild;
             if (leftChild != null) {
                 leftChild.setIsLeftChild(true);
@@ -256,7 +264,7 @@ public class BinarySearchTree <E extends Comparable<? super E>>{
         //----------------------------------------------------------------------
         @Override
         public String toString() {
-            return value.toString();
+            return name + " : " + mark;
         }
         //----------------------------------------------------------------------
         private String toString(TraversalType traversalType) {
@@ -267,7 +275,7 @@ public class BinarySearchTree <E extends Comparable<? super E>>{
                     if (leftChild != null) {
                         result += leftChild.toString(traversalType);
                     }
-                    result += value;
+                    result += name + " : " + mark + "\n";
                     if (rightChild != null) {
                         result += rightChild.toString(traversalType);
                     }
@@ -281,11 +289,11 @@ public class BinarySearchTree <E extends Comparable<? super E>>{
                     if (rightChild != null) {
                         result += rightChild.toString(traversalType);
                     }
-                    result += value;
+                    result += name + " : " + mark + "\n";
                     break;
 
                 case PREORDER:
-                    result += value;
+                    result += name + " : " + mark + "\n";
                     if (leftChild != null) {
                         result += leftChild.toString(traversalType);
                     }
@@ -295,11 +303,11 @@ public class BinarySearchTree <E extends Comparable<? super E>>{
                     break;
 
                 case LEVELORDER:
-                    Queue<Node<E>> level = new LinkedList<>();
+                    Queue<Node> level = new LinkedList<>();
                     level.add(this);
                     while (!level.isEmpty()) {
-                        Node<E> node = level.poll();
-                        result += node.value;
+                        Node node = level.poll();
+                        result += node.name + " : " + node.mark + "\n";
                         if (node.leftChild != null) {
                             level.add(node.leftChild);
                         }
@@ -315,17 +323,17 @@ public class BinarySearchTree <E extends Comparable<? super E>>{
     //--------------------------------------------------------------------------
     //--------------------------------------------------------------------------
     public static void main(String[] args) {
-        BinarySearchTree<String> binarySearchTree = new BinarySearchTree<>();
-        Node<String> node = binarySearchTree.insert("N");
-        binarySearchTree.insert("Z");
-        binarySearchTree.insert("L");
-        binarySearchTree.insert("A");
-        binarySearchTree.insert("D");
-        binarySearchTree.insert("R");
-        binarySearchTree.insert("U");
-        binarySearchTree.insert("G");
-        binarySearchTree.insert("B");
-        binarySearchTree.insert("Y");
+        BinarySearchTree binarySearchTree = new BinarySearchTree();
+        binarySearchTree.insert("N", 1);
+        binarySearchTree.insert("Z", 2);
+        binarySearchTree.insert("L", 3);
+        binarySearchTree.insert("A", 4);
+        binarySearchTree.insert("D", 5);
+        binarySearchTree.insert("R", 6);
+        binarySearchTree.insert("U", 7);
+        binarySearchTree.insert("G", 8);
+        binarySearchTree.insert("B", 9);
+        binarySearchTree.insert("Y", 10);
 
         System.out.println(binarySearchTree.getHeight());
         binarySearchTree.setTraversalType(TraversalType.LEVELORDER);
