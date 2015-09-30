@@ -156,6 +156,33 @@ public class BinarySearchTree {
         }
     }
     //--------------------------------------------------------------------------
+    protected Node locate(Node root, String name){
+        String rootName = root.getName();
+        Node child;
+        if(rootName.equalsIgnoreCase(name)) 
+            return root;
+        System.out.println("rootName = " + rootName + " name = " + name);
+        if(name.compareTo(rootName) < 0 ) 
+            child = root.getLeftChild();
+        else
+            child = root.getRightChild();
+        if(child == null) 
+            return root;
+        else 
+            return locate(child, name);
+    }
+    public boolean contains(String name){
+       if(root == null) return false;
+       Node loc = locate(root, name);
+       return name.equals(loc.name);
+    }
+    public Node get(String name){
+        if(root == null) return null;
+        Node loc = locate(root, name);
+        if(!name.equals(loc.getName())) return null;
+        else return loc;
+    }
+    //--------------------------------------------------------------------------
     @Override   
     public String toString() {
         if (root == null) {
@@ -178,7 +205,7 @@ public class BinarySearchTree {
     }
 
     //--------------------------------------------------------------------------
-    public static class Node {
+    public static class Node implements Comparable<String>{
 
         private String name;
         private int mark;
@@ -317,6 +344,11 @@ public class BinarySearchTree {
                     }
             }
             return result;
+        }
+
+        @Override
+        public int compareTo(String o) {
+            return this.getName().compareTo(o);
         }
     }
     //--------------------------------------------------------------------------
