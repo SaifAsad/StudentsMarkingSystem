@@ -1,48 +1,51 @@
 package studentsmarkingsystem;
 
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import studentsmarkingsystem.BinaryTree.Node;
 
-/**
- *
- * @author Saif Asad
- */
 public class ControlPanel extends JPanel implements ActionListener {
 
-    private final JLabel lblName;
-    private final JLabel lblMark;
-    private final JTextField txtName;
-    private final JTextField txtMark;
+    private final JLabel lblKey;
+    private final JLabel lblValue;
+    private final JTextField txtKey;
+    private final JTextField txtValue;
     private final JButton insert;
     private final JButton remove;
     private final JButton search;
+    private final JButton leftRotate;
+    private final JButton rightRotate;
     private final JButton exit;
+    private final BinaryTree<Integer> binaryTree;
+    private final TreePanel treePanel;
 
-    private String name;
-    private int mark;
+    public ControlPanel(BinaryTree binaryTree, TreePanel treePanel) {
+        super(new GridLayout(3, 4));
 
-    public ControlPanel() {
-        super(new GridLayout(2, 4));
+        this.binaryTree = binaryTree;
+        this.treePanel = treePanel;
 
-        lblName = new JLabel("Name");
-        lblName.setHorizontalAlignment(SwingConstants.CENTER);
-        add(lblName);
+        lblKey = new JLabel("Key");
+        lblKey.setHorizontalAlignment(SwingConstants.CENTER);
+        add(lblKey);
 
-        txtName = new JTextField();
-        add(txtName);
+        txtKey = new JTextField();
+        add(txtKey);
 
-        lblMark = new JLabel("Mark");
-        lblMark.setHorizontalAlignment(SwingConstants.CENTER);
-        add(lblMark);
+        lblValue = new JLabel("Value");
+        lblValue.setHorizontalAlignment(SwingConstants.CENTER);
+        add(lblValue);
 
-        txtMark = new JTextField();
-        add(txtMark);
+        txtValue = new JTextField();
+        add(txtValue);
 
         insert = new JButton("Insert");
         insert.addActionListener(this);
@@ -56,27 +59,59 @@ public class ControlPanel extends JPanel implements ActionListener {
         search.addActionListener(this);
         add(search);
 
+        add(Box.createRigidArea(new Dimension(0, 0)));
+
+        leftRotate = new JButton("Left Rotate");
+        leftRotate.addActionListener(this);
+        add(leftRotate);
+
+        rightRotate = new JButton("Right Rotate");
+        rightRotate.addActionListener(this);
+        add(rightRotate);
+
         exit = new JButton("Exit");
         exit.addActionListener(this);
         add(exit);
     }
+    /*
+    public void clear() {
+        txtName.setText("");
+        txtMark.setText("");
+    }*/
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        //get the value of the node from the textFields
-        name = txtName.getText();
-        mark = Integer.parseInt(txtMark.getText());
+
         if (e.getSource() == exit) {
             System.exit(0);
         } else if (e.getSource() == insert) {
-            
+
         } else if (e.getSource() == remove) {
 
-            //remove a node from the tree
-            //deleteNode();
-            //redraw
         } else if (e.getSource() == search) {
-
+            if (!txtKey.getText().isEmpty()) {
+                Node<Integer> node = binaryTree.search(Integer.parseInt(txtKey.getText()));
+                if (node != null) {
+                    treePanel.setCurrentNode(node);
+                    treePanel.repaint();
+                }
+            }
+        } else if (e.getSource() == leftRotate) {
+            if (!txtKey.getText().isEmpty()) {
+                Node<Integer> node = binaryTree.search(Integer.parseInt(txtKey.getText()));
+                if (node != null) {
+                    binaryTree.leftRotate(node);
+                    treePanel.repaint();
+                }
+            }
+        } else if (e.getSource() == rightRotate) {
+            if (!txtKey.getText().isEmpty()) {
+                Node<Integer> node = binaryTree.search(Integer.parseInt(txtKey.getText()));
+                if (node != null) {
+                    binaryTree.rightRotate(node);
+                    treePanel.repaint();
+                }
+            }
         }
     }
 
