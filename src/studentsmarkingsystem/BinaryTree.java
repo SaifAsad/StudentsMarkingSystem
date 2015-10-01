@@ -25,26 +25,9 @@ public class BinaryTree<E extends Comparable<? super E>> {
         size = 0;
         traversalType = TraversalType.INORDER;
     }
-    
-    public Node<E> search(E value){
-        return binarySearch(root, value);
-    }
-    
-    private Node<E> binarySearch (Node<E> node, E value){
-        if(node == null){
-            return null;
-        }
-        if(node.getValue().compareTo(value) == 0){
-            return node;
-        } else {
-            if(node.getValue().compareTo(value) < 0){
-                return binarySearch(node.getRightChild(), value);
-            }else{
-                return binarySearch(node.getLeftChild(), value);
-            }
-        }
-    }
-    
+
+    //--------------------------------------------------------------------------
+    //Rotation methods
     public void leftRotate(Node<E> x){
         if(x.getLeftChild() == null){
             return;
@@ -95,6 +78,26 @@ public class BinaryTree<E extends Comparable<? super E>> {
         x.setParent(y);
     }
     
+    //--------------------------------------------------------------------------
+    //Query and Update operations
+    public Node<E> search(E value){
+        return binarySearch(root, value);
+    }
+    
+    private Node<E> binarySearch (Node<E> node, E value){
+        if(node == null){
+            return null;
+        }
+        if(node.getValue().compareTo(value) == 0){
+            return node;
+        } else {
+            if(node.getValue().compareTo(value) < 0){
+                return binarySearch(node.getRightChild(), value);
+            }else{
+                return binarySearch(node.getLeftChild(), value);
+            }
+        }
+    }
     public void setTraversalType(TraversalType traversalType) {
         this.traversalType = traversalType;
     }
@@ -137,7 +140,8 @@ public class BinaryTree<E extends Comparable<? super E>> {
     }
 
     private Node<E> getSuccessor(Node<E> node) {
-        //leftmost child of the right child or the right most child of the left child
+        //leftmost child of the right child or the right most child of the
+        //left child
         Node<E> successorParent = node;
         Node<E> successor = node;
         Node<E> current = node.getRightChild();
@@ -204,6 +208,8 @@ public class BinaryTree<E extends Comparable<? super E>> {
         return node;
     }
 
+    //Utility methods
+    //--------------------------------------------------------------------------
     public int getSize() {
         return size;
     }
@@ -216,15 +222,15 @@ public class BinaryTree<E extends Comparable<? super E>> {
         if (node == null) {
             return 0;
         } else {
-            return 1 + Math.max(heightOfBinaryTree(node.getLeftChild()), heightOfBinaryTree(node.getRightChild()));
+            return 1 + Math.max(heightOfBinaryTree(node.getLeftChild()),
+                    heightOfBinaryTree(node.getRightChild()));
         }
     }
-    
-    //--------------------------------------------------------------------------
     public Node<E> getRoot(){
         return root;
     }
-    
+    //--------------------------------------------------------------------------
+    //Printing
     @Override
     public String toString() {
         if (root == null) {
@@ -246,8 +252,7 @@ public class BinaryTree<E extends Comparable<? super E>> {
         }
     }
 
-    //---------------------------------------------------------------------------------------------------------------
-
+    //--------------------------------------------------------------------------
     public static class Node<E extends Comparable<? super E>> {
 
         private E value;
