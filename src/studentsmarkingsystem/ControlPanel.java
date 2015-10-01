@@ -24,7 +24,7 @@ public class ControlPanel extends JPanel implements ActionListener {
     private final JButton leftRotate;
     private final JButton rightRotate;
     private final JButton exit;
-    private final BinaryTree<Integer> binaryTree;
+    private final BinaryTree<String, Integer> binaryTree;
     private final TreePanel treePanel;
 
     public ControlPanel(BinaryTree binaryTree, TreePanel treePanel) {
@@ -73,11 +73,11 @@ public class ControlPanel extends JPanel implements ActionListener {
         exit.addActionListener(this);
         add(exit);
     }
-    /*
+    
     public void clear() {
-        txtName.setText("");
-        txtMark.setText("");
-    }*/
+        txtKey.setText("");
+        txtValue.setText("");
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -85,20 +85,31 @@ public class ControlPanel extends JPanel implements ActionListener {
         if (e.getSource() == exit) {
             System.exit(0);
         } else if (e.getSource() == insert) {
-
+            if(!(txtKey.getText().isEmpty() && txtKey.getText().isEmpty())){
+                binaryTree.insert(txtKey.getText(), Integer.parseInt(txtValue.getText()));
+                treePanel.repaint();
+                clear();
+            }
         } else if (e.getSource() == remove) {
-
+            if(!(txtKey.getText().isEmpty())){
+                Node<String, Integer> node = binaryTree.search(txtKey.getText());
+                node = binaryTree.delete(node);
+                treePanel.repaint();
+                txtKey.setText(node.getKey());
+                txtValue.setText(node.getValue().toString());
+            }
         } else if (e.getSource() == search) {
             if (!txtKey.getText().isEmpty()) {
-                Node<Integer> node = binaryTree.search(Integer.parseInt(txtKey.getText()));
+                Node<String, Integer> node = binaryTree.search(txtKey.getText());
                 if (node != null) {
+                    txtValue.setText(node.getValue().toString());
                     treePanel.setCurrentNode(node);
                     treePanel.repaint();
                 }
             }
         } else if (e.getSource() == leftRotate) {
             if (!txtKey.getText().isEmpty()) {
-                Node<Integer> node = binaryTree.search(Integer.parseInt(txtKey.getText()));
+                Node<String, Integer> node = binaryTree.search(txtKey.getText());
                 if (node != null) {
                     binaryTree.leftRotate(node);
                     treePanel.repaint();
@@ -106,7 +117,8 @@ public class ControlPanel extends JPanel implements ActionListener {
             }
         } else if (e.getSource() == rightRotate) {
             if (!txtKey.getText().isEmpty()) {
-                Node<Integer> node = binaryTree.search(Integer.parseInt(txtKey.getText()));
+                Node<String, Integer> node = binaryTree.search(txtKey.getText());
+                clear();
                 if (node != null) {
                     binaryTree.rightRotate(node);
                     treePanel.repaint();

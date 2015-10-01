@@ -8,14 +8,16 @@ import java.util.Objects;
 import javax.swing.JPanel;
 import studentsmarkingsystem.BinaryTree.Node;
 
-public class TreePanel<E extends Comparable<? super E>> extends JPanel {
+public class TreePanel<K extends Comparable<? super K>, V> extends JPanel {
 
-    private final BinaryTree<E> binaryTree;
+    private final BinaryTree<K, V> binaryTree;
     private int nodeRadius;
     private int verticalGap;
-    private Node<E> currentNode;
+    private Node<K, V> currentNode; //this will be used to color the node that is
+    //assigned to it (in the drawTree )
+    
 
-    public TreePanel(BinaryTree<E> binaryTree) {
+    public TreePanel(BinaryTree<K, V> binaryTree) {
         this.binaryTree = binaryTree;
         currentNode = binaryTree.getRoot();
         setBackground(Color.WHITE);
@@ -33,7 +35,8 @@ public class TreePanel<E extends Comparable<? super E>> extends JPanel {
         }
     }
 
-    private void drawTree(Graphics g, Node<E> node, int x, int y, int horizontalGap) {
+    private void drawTree(Graphics g, Node<K, V> node, int x, int y, int horizontalGap) {
+        //if the node is the root make it red, otherwise make it black
         if (node == getCurrentNode()) {
             g.setColor(Color.RED);
         } else {
@@ -72,11 +75,11 @@ public class TreePanel<E extends Comparable<? super E>> extends JPanel {
         }
     }
 
-    public Node<E> getCurrentNode() {
+    public Node<K, V> getCurrentNode() {
         return currentNode;
     }
 
-    public void setCurrentNode(Node<E> currentNode) {
+    public void setCurrentNode(Node<K,V> currentNode) {
         this.currentNode = currentNode;
     }
 

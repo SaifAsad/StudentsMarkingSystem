@@ -1,22 +1,21 @@
 package studentsmarkingsystem;
 
-
 import java.util.LinkedList;
 import java.util.Queue;
 
 /**
  *
  * @author Saif Asad
- * @param <E>
+ * @param <K>
  */
-public class BinaryTree<E extends Comparable<? super E>> {
+public class BinaryTree<K extends Comparable<? super K>, V> {
 
     public enum TraversalType {
 
         PREORDER, INORDER, POSTORDER, LEVELORDER
     }
 
-    protected Node<E> root;
+    protected Node<K, V> root;
     protected int size;
     private TraversalType traversalType;
 
@@ -28,95 +27,106 @@ public class BinaryTree<E extends Comparable<? super E>> {
 
     //--------------------------------------------------------------------------
     //Rotation methods
-    public void leftRotate(Node<E> x){
-        if(x.getLeftChild() == null){
+    public void leftRotate(Node<K, V> x) {
+        if (x.getLeftChild() == null) {
             return;
         }
-        Node<E> y = x.getLeftChild();
+        Node<K, V> y = x.getLeftChild();
         x.setLeftChild(y.getRightChild());
-        if(y.getRightChild() != null){
+        if (y.getRightChild() != null) {
             y.getRightChild().setParent(x);
         }
         y.setParent(x.getParent());
-        if(x.getParent() == null){
+        if (x.getParent() == null) {
             root = y;
         } else {
-            if(x == x.getParent().getRightChild()){
+            if (x == x.getParent().getRightChild()) {
                 x.getParent().setRightChild(y);
-                
+
             } else {
                 x.getParent().setLeftChild(y);
             }
-            
+
         }
         y.setRightChild(x);
         x.setParent(y);
     }
-    
-    public void rightRotate(Node<E> x){
-        if(x.getRightChild() == null){
+
+    public void rightRotate(Node<K, V> x) {
+        if (x.getRightChild() == null) {
             return;
         }
-        Node<E> y = x.getRightChild();
+        Node<K, V> y = x.getRightChild();
         x.setRightChild(y.getLeftChild());
-        if(y.getLeftChild() != null){
+        if (y.getLeftChild() != null) {
             y.getLeftChild().setParent(x);
         }
         y.setParent(x.getParent());
-        if(x.getParent() == null){
+        if (x.getParent() == null) {
             root = y;
         } else {
-            if(x == x.getParent().getLeftChild()){
+            if (x == x.getParent().getLeftChild()) {
                 x.getParent().setLeftChild(y);
-                
+
             } else {
                 x.getParent().setRightChild(y);
             }
-            
+
         }
         y.setLeftChild(x);
         x.setParent(y);
     }
-    
+
     //--------------------------------------------------------------------------
     //Query and Update operations
-    public Node<E> search(E value){
-        return binarySearch(root, value);
+    public Node<K, V> search(K key) {
+        return binarySearch(root, key);
     }
-    
-    private Node<E> binarySearch (Node<E> node, E value){
-        if(node == null){
+
+    private Node<K, V> binarySearch(Node<K, V> node, K key) {
+        if (node == null) {
             return null;
         }
-        if(node.getValue().compareTo(value) == 0){
+        if (node.getKey().compareTo(key) == 0) {
             return node;
         } else {
-            if(node.getValue().compareTo(value) < 0){
-                return binarySearch(node.getRightChild(), value);
-            }else{
-                return binarySearch(node.getLeftChild(), value);
+            if (node.getKey().compareTo(key) < 0) {
+                return binarySearch(node.getRightChild(), key);
+            } else {
+                return binarySearch(node.getLeftChild(), key);
             }
         }
     }
+
     public void setTraversalType(TraversalType traversalType) {
         this.traversalType = traversalType;
     }
 
-    public Node<E> insert(E value) {
-        Node<E> node = new Node(value);
-        if (root == null) {
-            root = node;
+    //--------------------------------------------------------------------------
+    public Node<K, V> insert(K key, V value) {
+        Node<K, V> node = new Node(key, value);
+        //check if the node already exist
+        Node<K, V> checkNode = search(key);
+        if (checkNode != null) {
+            //the node already exist => only update the value
+            checkNode.setValue(value);
+            return checkNode;
         } else {
-            insert(node, root);
+
+            if (root == null) {
+                root = node;
+            } else {
+                insert(node, root);
+            }
+            size++;
+            return node;
         }
-        size++;
-        return node;
     }
 
     //the node will be inserted in a leaf somewhere
-    private void insert(Node<E> node, Node<E> parent) {
+    private void insert(Node<K, V> node, Node<K, V> parent) {
         //compare to determine to which side we add the node
-        if (node.getValue().compareTo(parent.getValue()) <= 0) {
+        if (node.getKey().compareTo(parent.getKey()) <= 0) {
             //what if the parent has a left child
             if (parent.getLeftChild() == null) {
                 parent.setLeftChild(node);
@@ -139,12 +149,14 @@ public class BinaryTree<E extends Comparable<? super E>> {
         }
     }
 
-    private Node<E> getSuccessor(Node<E> node) {
+    //--------------------------------------------------------------------------
+
+    private Node<K, V> getSuccessor(Node<K, V> node) {
         //leftmost child of the right child or the right most child of the
         //left child
-        Node<E> successorParent = node;
-        Node<E> successor = node;
-        Node<E> current = node.getRightChild();
+        Node<K, V> successorParent = node;
+        Node<K, V> successor = node;
+        Node<K, V> current = node.getRightChild();
         //will loop untill current is null, the successor is found
         while (current != null) {
             successorParent = successor;
@@ -158,7 +170,7 @@ public class BinaryTree<E extends Comparable<? super E>> {
         return successor;
     }
 
-    public Node<E> delete(Node<E> node) {
+    public Node<K, V> delete(Node<K, V> node) {
         //there are 4 cases in delete
         if (node.getLeftChild() == null && node.getRightChild() == null) {
             //if the node is a leaf
@@ -189,7 +201,7 @@ public class BinaryTree<E extends Comparable<? super E>> {
             }
             //delete a node that has 2 children
         } else {
-            Node<E> successor = getSuccessor(node);
+            Node<K, V> successor = getSuccessor(node);
             if (node == root) {
                 root = successor;
             } else if (node.isLeftChild()) {
@@ -218,7 +230,7 @@ public class BinaryTree<E extends Comparable<? super E>> {
         return heightOfBinaryTree(root);
     }
 
-    private int heightOfBinaryTree(Node<E> node) {
+    private int heightOfBinaryTree(Node<K, V> node) {
         if (node == null) {
             return 0;
         } else {
@@ -226,11 +238,14 @@ public class BinaryTree<E extends Comparable<? super E>> {
                     heightOfBinaryTree(node.getRightChild()));
         }
     }
-    public Node<E> getRoot(){
+
+    public Node<K, V> getRoot() {
         return root;
     }
+
     //--------------------------------------------------------------------------
     //Printing
+
     @Override
     public String toString() {
         if (root == null) {
@@ -246,23 +261,28 @@ public class BinaryTree<E extends Comparable<? super E>> {
                     return root.toString(TraversalType.POSTORDER);
                 case LEVELORDER:
                     return root.toString(TraversalType.LEVELORDER);
-                default: 
+                default:
                     return "";
             }
         }
     }
 
     //--------------------------------------------------------------------------
-    public static class Node<E extends Comparable<? super E>> {
+    //--------------------------------------------------------------------------
+    //--------------------------------------------------------------------------
 
-        private E value;
-        private Node<E> rightChild;
-        private Node<E> leftChild;
-        private Node<E> parent;
+    public static class Node<K extends Comparable<? super K>, V> {
+
+        private K key;
+        private V value;
+        private Node<K, V> rightChild;
+        private Node<K, V> leftChild;
+        private Node<K, V> parent;
         private boolean isLeftChild;
         private boolean isRightChild;
 
-        public Node(E value) {
+        public Node(K key, V value) {
+            this.key = key;
             this.value = value;
             leftChild = null;
             rightChild = null;
@@ -287,27 +307,37 @@ public class BinaryTree<E extends Comparable<? super E>> {
             this.isLeftChild = !isRightChild;
         }
 
-        public Node<E> getParent() {
+        //----------------------------------------------------------------------
+        //Accessors and Mutators
+        public Node<K, V> getParent() {
             return this.parent;
         }
 
-        public void setParent(Node<E> parent) {
+        public void setParent(Node<K, V> parent) {
             this.parent = parent;
         }
 
-        public E getValue() {
+        public K getKey() {
+            return this.key;
+        }
+
+        public K setKey(K key) {
+            return this.key = key;
+        }
+
+        public V getValue() {
             return value;
         }
 
-        public void setValue(E value) {
+        public void setValue(V value) {
             this.value = value;
         }
 
-        public Node<E> getRightChild() {
+        public Node<K, V> getRightChild() {
             return rightChild;
         }
 
-        public void setRightChild(Node<E> rightChild) {
+        public void setRightChild(Node<K, V> rightChild) {
             this.rightChild = rightChild;
             if (rightChild != null) {
                 rightChild.setIsRightChild(true);
@@ -316,11 +346,11 @@ public class BinaryTree<E extends Comparable<? super E>> {
             }
         }
 
-        public Node<E> getLeftChild() {
+        public Node<K, V> getLeftChild() {
             return leftChild;
         }
 
-        public void setLeftChild(Node<E> leftChild) {
+        public void setLeftChild(Node<K, V> leftChild) {
             this.leftChild = leftChild;
             if (leftChild != null) {
                 leftChild.setIsLeftChild(true);
@@ -328,9 +358,11 @@ public class BinaryTree<E extends Comparable<? super E>> {
             }
         }
 
+        //----------------------------------------------------------------------
+
         @Override
         public String toString() {
-            return value.toString();
+            return key.toString();
         }
 
         private String toString(TraversalType traversalType) {
@@ -369,10 +401,10 @@ public class BinaryTree<E extends Comparable<? super E>> {
                     break;
 
                 case LEVELORDER:
-                    Queue<Node<E>> level = new LinkedList<>();
+                    Queue<Node<K, V>> level = new LinkedList<>();
                     level.add(this);
                     while (!level.isEmpty()) {
-                        Node<E> node = level.poll();
+                        Node<K, V> node = level.poll();
                         result += node.value;
                         if (node.leftChild != null) {
                             level.add(node.leftChild);
@@ -387,21 +419,22 @@ public class BinaryTree<E extends Comparable<? super E>> {
     }
 
     public static void main(String[] args) {
-        BinaryTree<String> binaryTree = new BinaryTree<>();
-        Node<String> node = binaryTree.insert("N");
-        binaryTree.insert("Z");
-        binaryTree.insert("L");
-        binaryTree.insert("A");
-        binaryTree.insert("D");
-        binaryTree.insert("R");
-        binaryTree.insert("U");
-        binaryTree.insert("G");
-        binaryTree.insert("B");
-        binaryTree.insert("Y");
+        BinaryTree<String, Integer> binaryTree = new BinaryTree<>();
+        Node<String, Integer> node = binaryTree.insert("N", 4);
+        /*binaryTree.insert("Z");
+         binaryTree.insert("L");
+         binaryTree.insert("A");
+         binaryTree.insert("D");
+         binaryTree.insert("R");
+         binaryTree.insert("U");
+         binaryTree.insert("G");
+         binaryTree.insert("B");
+         binaryTree.insert("Y");*/
 
         System.out.println(binaryTree.getHeight());
         binaryTree.setTraversalType(TraversalType.INORDER);
         System.out.println(binaryTree);
+
     }
 
 }
