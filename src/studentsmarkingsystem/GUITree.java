@@ -30,17 +30,18 @@ public class GUITree extends JPanel {
         frame.setVisible(true);
     }
 
-    private int index = 0;
+    private static int index = 10;
     private String c = "a";
     private int asc;
     
     //System.out.println(String.valueOf(Character.toChars(asc)));
 
     private void buildChildren(int start, int end, BinaryTree<String, Integer> binaryTree) {
-        asc = c.charAt(0);
-        System.out.println("index = " + index);
-        asc += index++;
+        asc = c.charAt(0);    
+        asc += index;
+        index++;
         if (start < end + 1) {
+            System.out.println("index = " + index);
             int mid = start + (end - start) / 2;
             binaryTree.insert(String.valueOf(Character.toChars(asc)), mid);
             buildChildren(start, mid - 1, binaryTree);
