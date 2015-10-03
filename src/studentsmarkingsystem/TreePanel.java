@@ -17,8 +17,8 @@ public class TreePanel<K extends Comparable<? super K>, V> extends JPanel {
     //assigned to it (in the drawTree )
     
 
-    public TreePanel(BinaryTree<K, V> binaryTree) {
-        this.binaryTree = binaryTree;
+    public TreePanel(BinaryTree<K, V> binaryTree, RBTree<K, V> rbTree) {
+        this.binaryTree = binaryTree; 
         currentNode = binaryTree.getRoot();
         setBackground(Color.WHITE);
     }
