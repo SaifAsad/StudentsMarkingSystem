@@ -24,10 +24,11 @@ public class ControlPanel extends JPanel implements ActionListener {
     private final JButton leftRotate;
     private final JButton rightRotate;
     private final JButton exit;
-    private final BinaryTree<String, Integer> binaryTree;
+    //private final BinaryTree<String, Integer> binaryTree;
+    private final RedBlackTree<String, Integer> binaryTree;
     private final TreePanel treePanel;
 
-    public ControlPanel(BinaryTree binaryTree, TreePanel treePanel) {
+    public ControlPanel(RedBlackTree binaryTree, TreePanel treePanel) {
         super(new GridLayout(3, 4));
 
         this.binaryTree = binaryTree;

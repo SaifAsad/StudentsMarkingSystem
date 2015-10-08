@@ -1,9 +1,10 @@
+
 package studentsmarkingsystem;
 
 /**
  *
  * @author Saif Asad
  */
-public class SplayTree {
-    
+public enum Color {
+     RED, BLACK;
 }

@@ -17,9 +17,10 @@ public class TreePanel<K extends Comparable<? super K>, V> extends JPanel {
     //assigned to it (in the drawTree )
     
 
-    public TreePanel(BinaryTree<K, V> binaryTree, RBTree<K, V> rbTree) {
+    public TreePanel(BinaryTree<K, V> binaryTree) {
         this.binaryTree = binaryTree; 
-        currentNode = binaryTree.getRoot();
+        //currentNode = binaryTree.getRoot();
+        currentNode = null;
         setBackground(Color.WHITE);
     }
 
@@ -38,9 +39,11 @@ public class TreePanel<K extends Comparable<? super K>, V> extends JPanel {
     private void drawTree(Graphics g, Node<K, V> node, int x, int y, int horizontalGap) {
         //if the node is the root make it red, otherwise make it black
         if (node == getCurrentNode()) {
-            g.setColor(Color.RED);
-        } else {
+            g.setColor(Color.YELLOW);
+        } else if(node.color == studentsmarkingsystem.Color.BLACK){ 
             g.setColor(Color.BLACK);
+        } else {
+            g.setColor(Color.RED);
         }
         g.fillOval(x - nodeRadius, y - nodeRadius, 2 * nodeRadius, 2 * nodeRadius);
         Font nodeFont = getFont("SansSerif", Font.BOLD, nodeRadius);

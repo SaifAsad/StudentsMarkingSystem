@@ -7,6 +7,7 @@ import java.util.Queue;
  *
  * @author Saif Asad
  * @param <K>
+ * @param <V>
  */
 public class BinaryTree<K extends Comparable<? super K>, V> {
 
@@ -27,16 +28,24 @@ public class BinaryTree<K extends Comparable<? super K>, V> {
 
     //--------------------------------------------------------------------------
     //Rotation methods
-    public void leftRotate(Node<K, V> x) {
+    public void rightRotate(Node<K, V> x) {
         if (x.getLeftChild() == null) {
             return;
         }
         Node<K, V> y = x.getLeftChild();
+        
+        //First
+        //link the right child of y as the left child of x
         x.setLeftChild(y.getRightChild());
         if (y.getRightChild() != null) {
             y.getRightChild().setParent(x);
         }
+        
+        //Second
+        //placing y in place of x
+        //link y to parent
         y.setParent(x.getParent());
+        //link parent to y
         if (x.getParent() == null) {
             root = y;
         } else {
@@ -48,20 +57,28 @@ public class BinaryTree<K extends Comparable<? super K>, V> {
             }
 
         }
+        
+        //Third
+        //link y to x
         y.setRightChild(x);
+        //link x to y
         x.setParent(y);
     }
 
-    public void rightRotate(Node<K, V> x) {
+    public void leftRotate(Node<K, V> x) {
         if (x.getRightChild() == null) {
             return;
         }
         Node<K, V> y = x.getRightChild();
+        
+        //connect the left child of y to the demoted x
         x.setRightChild(y.getLeftChild());
         if (y.getLeftChild() != null) {
             y.getLeftChild().setParent(x);
         }
         y.setParent(x.getParent());
+        
+        //placing y in place of x 
         if (x.getParent() == null) {
             root = y;
         } else {
@@ -73,6 +90,8 @@ public class BinaryTree<K extends Comparable<? super K>, V> {
             }
 
         }
+        
+        //link x to y
         y.setLeftChild(x);
         x.setParent(y);
     }
@@ -122,7 +141,7 @@ public class BinaryTree<K extends Comparable<? super K>, V> {
             return node;
         }
     }
-
+ 
     //the node will be inserted in a leaf somewhere
     private void insert(Node<K, V> node, Node<K, V> parent) {
         //compare to determine to which side we add the node
@@ -150,9 +169,8 @@ public class BinaryTree<K extends Comparable<? super K>, V> {
     }
 
     //--------------------------------------------------------------------------
-
-    private Node<K, V> getSuccessor(Node<K, V> node) {
-        //leftmost child of the right child or the right most child of the
+    public Node<K, V> getSuccessor(Node<K, V> node) {
+        //left most child of the right child or the right most child of the
         //left child
         Node<K, V> successorParent = node;
         Node<K, V> successor = node;
@@ -187,7 +205,6 @@ public class BinaryTree<K extends Comparable<? super K>, V> {
                 root = node.getLeftChild();
             } else if (node.isLeftChild()) {
                 node.getParent().setLeftChild(node.getLeftChild());
-
             } else {
                 node.getParent().setRightChild(node.getLeftChild());
             }
@@ -245,7 +262,6 @@ public class BinaryTree<K extends Comparable<? super K>, V> {
 
     //--------------------------------------------------------------------------
     //Printing
-
     @Override
     public String toString() {
         if (root == null) {
@@ -270,7 +286,6 @@ public class BinaryTree<K extends Comparable<? super K>, V> {
     //--------------------------------------------------------------------------
     //--------------------------------------------------------------------------
     //--------------------------------------------------------------------------
-
     public static class Node<K extends Comparable<? super K>, V> {
 
         private K key;
@@ -280,12 +295,29 @@ public class BinaryTree<K extends Comparable<? super K>, V> {
         private Node<K, V> parent;
         private boolean isLeftChild;
         private boolean isRightChild;
-
+        public Color color;
+       
         public Node(K key, V value) {
             this.key = key;
             this.value = value;
             leftChild = null;
             rightChild = null;
+            this.parent = null;
+            this.color = Color.RED;
+        }
+
+        public Node(K key, V value, Color nodeColor, Node<K, V> left, Node<K, V> right) {
+            this(key, value);
+            this.color = nodeColor;
+            this.setLeftChild(left);
+            this.setRightChild(right);
+           
+            if (left != null) {
+                leftChild.setParent(this);
+            }
+            if (right != null) {
+                rightChild.setParent(this);
+            }
             this.parent = null;
         }
 
@@ -357,7 +389,34 @@ public class BinaryTree<K extends Comparable<? super K>, V> {
                 leftChild.setParent(this);
             }
         }
+        
+        public Color getColor(){
+            return this.color;
+        }
+        public void setColor(Color color){
+            this.color = color;
+        }
+        
+        public Node<K, V> grandparent() {
+            assert parent != null; // Not the root node
+            assert parent.getParent() != null; // Not child of root
+            return parent.getParent();
+        }
 
+        public Node<K, V> sibling() {
+            assert parent != null; // Root node has no sibling
+            if (this == parent.getLeftChild()) {
+                return parent.getRightChild();
+            } else {
+                return parent.getLeftChild();
+            }
+        }
+
+        public Node<K, V> uncle() {
+            assert parent != null; // Root node has no uncle
+            assert parent.getParent() != null; // Children of root have no uncle
+            return parent.sibling();
+        }
         //----------------------------------------------------------------------
 
         @Override
