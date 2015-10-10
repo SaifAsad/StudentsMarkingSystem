@@ -77,44 +77,44 @@ public class RedBlackTree<K extends Comparable<? super K>, V> extends BinaryTree
             } else {
                 node.getParent().setRightChild(null);
             }
+            //node x has left child
         } else if (node.getRightChild() == null) {
-            if (node == root) {
+            if (node == root) { //tested
                 root = node.getLeftChild();
-                deleteFixUp(root);
-            } else if (node.isLeftChild()) {
-                temp = node.getLeftChild();
+                deleteFixUp(root); 
+            } else if (node.isLeftChild()) {  //tested
                 node.getParent().setLeftChild(node.getLeftChild());
-                deleteFixUp(temp);
+                deleteFixUp(node);
             } else {
-                temp = node.getLeftChild();
                 node.getParent().setRightChild(node.getLeftChild());
-                deleteFixUp(temp);
+                deleteFixUp(node);
             }
         } else if (node.getLeftChild() == null) {
             if (node == root) {
                 root = node.getRightChild();
                 deleteFixUp(root); // this will ensure that the colour of the root is black
             } else if (node.isLeftChild()) {
-                temp = node.getRightChild();
                 node.getParent().setLeftChild(node.getRightChild());
-                deleteFixUp(temp);
+                deleteFixUp(node);
             } else {
-                temp = node.getRightChild();
                 node.getParent().setRightChild(node.getRightChild());
-                deleteFixUp(temp);
+                deleteFixUp(node);
             }
             //delete a node that has 2 children
         } else {
             Node<K, V> successor = super.getSuccessor(node);
             if (node == root) {
                 root = successor;
+                deleteFixUp(node);
             } else if (node.isLeftChild()) {
+                deleteFixUp(node);
                 node.getParent().setLeftChild(successor);
             } else {
+                deleteFixUp(node);
                 node.getParent().setRightChild(successor);
             }
             successor.setLeftChild(node.getLeftChild());
-            deleteFixUp(node);
+            
         }
         node.setParent(null);
         node.setLeftChild(null);
@@ -128,8 +128,9 @@ public class RedBlackTree<K extends Comparable<? super K>, V> extends BinaryTree
         Node<K, V> deletedNode = node;
         Node<K, V> result = deletedNode;
         Node<K, V> sibling;
+        System.out.println("test result for equaltiy " + !(deletedNode.equals(this.getRoot())));
         while (!(deletedNode.equals(this.getRoot())) && deletedNode.getColor() == Color.BLACK) {
-            //deletedNode it left child of it's parent
+            //deletedNode is left child of it's parent
             if (deletedNode.equals(deletedNode.getParent().getLeftChild())) {
                 sibling = deletedNode.getParent().getRightChild();
                 if (sibling != null && sibling.getColor() == Color.RED) {
@@ -156,13 +157,16 @@ public class RedBlackTree<K extends Comparable<? super K>, V> extends BinaryTree
                         rightRotate(sibling);
                         sibling = deletedNode.getParent().getRightChild();
                     }
+                    //CASE FOUR
                     sibling.setColor(deletedNode.getParent().getColor());
                     deletedNode.getParent().setColor(Color.BLACK);
                     sibling.getRightChild().setColor(Color.BLACK);
                     leftRotate(deletedNode.getParent());
                     deletedNode = this.getRoot();
                 }
-            } //deleted node is the right child of it's parent
+            } 
+            //------------------------------------------------------------------
+            //deleted node is the right child of it's parent
             else {
                 sibling = deletedNode.getParent().getLeftChild();
                 if (sibling != null && sibling.getColor() == Color.RED) {

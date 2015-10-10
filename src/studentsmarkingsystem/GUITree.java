@@ -11,7 +11,7 @@ public class GUITree extends JPanel {
     private static final int DEFAULT_WIDTH = 1800;
     private static final int DEFAULT_HEIGHT = 600;
 
-    public GUITree() {
+    public GUITree() throws InterruptedException {
         super(new BorderLayout());
         setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
 
@@ -27,8 +27,8 @@ public class GUITree extends JPanel {
             
             //RBTree<String, Integer> binaryTree = buildRBTree(8);
             
-            //RedBlackTree<String, Integer> binaryTree = buildRBTree(8);
-            RedBlackTree<String, Integer> binaryTree = new RedBlackTree<>();
+            RedBlackTree<String, Integer> binaryTree = buildRBTree(26);
+            //RedBlackTree<String, Integer> binaryTree = new RedBlackTree<>();
             TreePanel<String, Integer> treePanel = new TreePanel<>(binaryTree);
             add(treePanel, BorderLayout.CENTER);
             ControlPanel controlPanel = new ControlPanel(binaryTree, treePanel);
@@ -44,7 +44,7 @@ public class GUITree extends JPanel {
          add(controlPanel, BorderLayout.SOUTH);*/
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         JFrame frame = new JFrame("Assignment 2 : Students Marking System");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         GUITree assignment2 = new GUITree();
@@ -57,7 +57,7 @@ public class GUITree extends JPanel {
     //--------------------------------------------------------------------------
     //TESTING
     //those variables are for testing
-    private static int index = 10;
+    private static int index = 0;
     private final String c = "a";
     private int asc;
 
@@ -97,10 +97,15 @@ public class GUITree extends JPanel {
         }
     }
 
-    private RedBlackTree<String, Integer> buildRBTree(int n) {
+    private RedBlackTree<String, Integer> buildRBTree(int n) throws InterruptedException {
         RedBlackTree<String, Integer> binaryTree = new RedBlackTree<>();
-        buildChildren(1, n - 1, binaryTree);
+        //buildChildren(1, n - 1, binaryTree);
+        for(int i = 0; i < n; i++){
+             asc = c.charAt(0);
+             asc += i;
+             binaryTree.insert(String.valueOf(Character.toChars(asc)), i);
+             
+        } 
         return binaryTree;
     }
-
 }
