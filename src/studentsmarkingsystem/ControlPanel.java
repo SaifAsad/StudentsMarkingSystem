@@ -1,10 +1,10 @@
 package studentsmarkingsystem;
 
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.Box;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -21,17 +21,16 @@ public class ControlPanel extends JPanel implements ActionListener {
     private final JButton insert;
     private final JButton remove;
     private final JButton search;
-    private final JButton leftRotate;
-    private final JButton rightRotate;
     private final JButton exit;
-    //private final BinaryTree<String, Integer> binaryTree;
-    private final RedBlackTree<String, Integer> binaryTree;
+    private BinaryTree<String, Integer> binaryTree;
+    private BinaryTree<String, Integer> binaryTreeNamesIndex;
     private final TreePanel treePanel;
 
-    public ControlPanel(RedBlackTree binaryTree, TreePanel treePanel) {
-        super(new GridLayout(3, 4));
+    public ControlPanel(BinaryTree binaryTree, BinaryTree binaryTreeNamesIndex, TreePanel treePanel) {
+        super(new GridLayout(2, 4));
 
         this.binaryTree = binaryTree;
+        this.binaryTreeNamesIndex = binaryTreeNamesIndex;
         this.treePanel = treePanel;
 
         lblKey = new JLabel("Key");
@@ -40,6 +39,16 @@ public class ControlPanel extends JPanel implements ActionListener {
 
         txtKey = new JTextField();
         add(txtKey);
+        txtKey.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                txtKey.setText("");
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+            }
+        });
 
         lblValue = new JLabel("Value");
         lblValue.setHorizontalAlignment(SwingConstants.CENTER);
@@ -47,6 +56,16 @@ public class ControlPanel extends JPanel implements ActionListener {
 
         txtValue = new JTextField();
         add(txtValue);
+        txtValue.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                txtValue.setText("");
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+            }
+        });
 
         insert = new JButton("Insert");
         insert.addActionListener(this);
@@ -60,21 +79,11 @@ public class ControlPanel extends JPanel implements ActionListener {
         search.addActionListener(this);
         add(search);
 
-        add(Box.createRigidArea(new Dimension(0, 0)));
-
-        leftRotate = new JButton("Left Rotate");
-        leftRotate.addActionListener(this);
-        add(leftRotate);
-
-        rightRotate = new JButton("Right Rotate");
-        rightRotate.addActionListener(this);
-        add(rightRotate);
-
         exit = new JButton("Exit");
         exit.addActionListener(this);
         add(exit);
     }
-    
+
     public void clear() {
         txtKey.setText("");
         txtValue.setText("");
@@ -86,13 +95,25 @@ public class ControlPanel extends JPanel implements ActionListener {
         if (e.getSource() == exit) {
             System.exit(0);
         } else if (e.getSource() == insert) {
-            if(!(txtKey.getText().isEmpty() && txtKey.getText().isEmpty())){
-                binaryTree.insert(txtKey.getText(), Integer.parseInt(txtValue.getText()));
-                treePanel.repaint();
-                clear();
+            treePanel.setCurrentNode(null);
+            if (!(txtKey.getText().isEmpty())) {
+                if (!(txtValue.getText().isEmpty())) {
+                    try {
+                        Integer.parseInt(txtValue.getText());
+                        binaryTree.insert(txtKey.getText(), Integer.parseInt(txtValue.getText()));
+                        treePanel.repaint();
+                        clear();
+                    } catch (NumberFormatException numberFormatException) {
+                        //Not an integer
+                        txtValue.setText("NOT A NUMBER!");
+                    }
+                }else{
+                    txtValue.setText("Enter a value!!");
+                }
             }
         } else if (e.getSource() == remove) {
-            if(!(txtKey.getText().isEmpty())){
+            treePanel.setCurrentNode(null);
+            if (!(txtKey.getText().isEmpty())) {
                 Node<String, Integer> node = binaryTree.search(txtKey.getText());
                 node = binaryTree.delete(node);
                 treePanel.repaint();
@@ -108,24 +129,6 @@ public class ControlPanel extends JPanel implements ActionListener {
                     treePanel.repaint();
                 }
             }
-        } else if (e.getSource() == leftRotate) {
-            if (!txtKey.getText().isEmpty()) {
-                Node<String, Integer> node = binaryTree.search(txtKey.getText());
-                if (node != null) {
-                    binaryTree.leftRotate(node);
-                    treePanel.repaint();
-                }
-            }
-        } else if (e.getSource() == rightRotate) {
-            if (!txtKey.getText().isEmpty()) {
-                Node<String, Integer> node = binaryTree.search(txtKey.getText());
-                clear();
-                if (node != null) {
-                    binaryTree.rightRotate(node);
-                    treePanel.repaint();
-                }
-            }
-        }
+        } 
     }
-
 }
